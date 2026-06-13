@@ -26,7 +26,7 @@ function UploadDataset() {
       setReport(result);
     } catch (error) {
       console.error(error);
-      alert("Analysis failed.");
+      alert(error.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
