@@ -64,7 +64,7 @@ function AnalysisReport({ report }) {
               className="bg-white rounded-2xl p-4 animate-float-in"
             >
               <img
-                src={`http://127.0.0.1:8000/${path}`}
+                src={`${import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"}/${path}`}
                 alt={`Chart ${index + 1}`}
                 className="w-full rounded-xl"
               />

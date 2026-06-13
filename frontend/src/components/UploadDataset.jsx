@@ -109,14 +109,14 @@ function UploadDataset() {
             </Link>
 
             <a
-              href={`http://127.0.0.1:8000/reports/${reportId}/download-cleaned`}
+              href={`${import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"}/reports/${reportId}/download-cleaned`}
               className="px-5 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 transition"
             >
               Download Cleaned CSV
             </a>
 
             <a
-              href={`http://127.0.0.1:8000/reports/${reportId}/download-no-outliers`}
+              href={`${import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"}/reports/${reportId}/download-no-outliers`}
               className="px-5 py-3 rounded-xl bg-purple-500 text-white font-bold hover:bg-purple-400 transition"
             >
               Download No-Outliers CSV
