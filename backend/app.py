@@ -1,19 +1,44 @@
 import os
 import shutil
 import json
+from datetime import datetime
 
 from fastapi import FastAPI, UploadFile, File
-from src.pipeline import run_insightflow_pipeline
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from src.storage import load_report, save_chat_message, load_chat_history, save_report
 from pydantic import BaseModel
+from src.pipeline import run_insightflow_pipeline
 from src.report_generator import build_report_prompt
 from src.gemini_service import call_gemini
 from src.qa import build_qa_prompt
+from src.pdf_generator import create_ai_report_pdf
+from src.storage import (
+    save_report,
+    load_report,
+    update_report,
+    save_chat_message,
+    load_chat_history,
+    save_cleaned_dataset,
+    save_outlier_removed_dataset,
+)
 
 
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.mount(
     "/charts",
@@ -62,17 +87,36 @@ def analyze_dataset(file: UploadFile = File(...)):
 
     report = run_insightflow_pipeline(file_path)
 
-    report["cleaned_df"] = report["cleaned_df"].to_dict(
+    report_for_json = report.copy()
+    report_for_json["cleaned_df"] = report["cleaned_df"].to_dict(
         orient="records"
     )
 
-    report = convert_numpy_types(report)
+    report_for_json = convert_numpy_types(report_for_json)
 
-    saved_report = save_report(report)
+    saved_report = save_report(report_for_json)
 
-    report["saved_report"] = saved_report
+    report_id = saved_report["report_id"]
 
-    return report
+    cleaned_dataset_path = save_cleaned_dataset(
+        report["cleaned_df"],
+        report_id
+    )
+
+    outlier_removed_dataset_path = save_outlier_removed_dataset(
+        report["cleaned_df"],
+        report["cleaning_report"]["outlier_report"],
+        report_id
+    )
+
+    report_for_json["download_files"] = {
+        "cleaned_dataset": cleaned_dataset_path,
+        "outlier_removed_dataset": outlier_removed_dataset_path
+    }
+
+    report_for_json["saved_report"] = saved_report
+
+    return report_for_json
 
 
 @app.get("/reports")
@@ -176,7 +220,6 @@ def get_chat_history(report_id: str):
     }
 
 
-
 @app.post("/reports/{report_id}/generate-ai-report")
 def generate_ai_report(report_id: str):
     report = load_report(report_id)
@@ -186,11 +229,101 @@ def generate_ai_report(report_id: str):
             "error": f"Report '{report_id}' not found."
         }
 
+    if "ai_report" in report:
+        return {
+            "report_id": report_id,
+            "ai_report": report["ai_report"],
+            "cached": True
+        }
+
     prompt = build_report_prompt(report)
 
-    ai_report = call_gemini(prompt)
+    ai_response = call_gemini(prompt)
+
+    if "error" in ai_response:
+        return {
+            "report_id": report_id,
+            "ai_report": ai_response,
+            "cached": False
+        }
+
+    ai_report_text = ai_response["response"]
+
+    pdf_path = create_ai_report_pdf(
+        report_id,
+        ai_report_text
+    )
+
+    report["ai_report"] = {
+        "content": ai_report_text,
+        "pdf_path": pdf_path,
+        "generated_at": datetime.now().isoformat()
+    }
+
+    update_report(report_id, report)
 
     return {
         "report_id": report_id,
-        "ai_report": ai_report
+        "ai_report": report["ai_report"],
+        "cached": False
     }
+
+
+@app.get("/reports/{report_id}/download-cleaned")
+def download_cleaned_dataset(report_id: str):
+    file_path = f"cleaned_data/{report_id}_cleaned.csv"
+
+    if not os.path.exists(file_path):
+        return {
+            "error": "Cleaned dataset not found."
+        }
+
+    return FileResponse(
+        file_path,
+        media_type="text/csv",
+        filename=f"{report_id}_cleaned.csv"
+    )
+
+
+@app.get("/reports/{report_id}/download-no-outliers")
+def download_outlier_removed_dataset(report_id: str):
+    file_path = f"cleaned_data/{report_id}_no_outliers.csv"
+
+    if not os.path.exists(file_path):
+        return {
+            "error": "Outlier removed dataset not found."
+        }
+
+    return FileResponse(
+        file_path,
+        media_type="text/csv",
+        filename=f"{report_id}_no_outliers.csv"
+    )
+
+
+@app.get("/reports/{report_id}/download-ai-report-pdf")
+def download_ai_report_pdf(report_id: str):
+    report = load_report(report_id)
+
+    if report is None:
+        return {
+            "error": f"Report '{report_id}' not found."
+        }
+
+    if "ai_report" not in report:
+        return {
+            "error": "AI report has not been generated yet."
+        }
+
+    pdf_path = report["ai_report"].get("pdf_path")
+
+    if not pdf_path or not os.path.exists(pdf_path):
+        return {
+            "error": "PDF report not found."
+        }
+
+    return FileResponse(
+        pdf_path,
+        media_type="application/pdf",
+        filename=f"{report_id}_ai_report.pdf"
+    )

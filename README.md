@@ -1,284 +1,199 @@
-# 🚀 InsightFlow AI
+# InsightFlow AI
 
-An AI-Powered Automated Data Analyst and Conversational Insight Engine that transforms raw CSV datasets into clean data, visualizations, AI-generated reports, and context-aware analytical conversations.
+> AI-Powered Automated Data Analyst & Insight Engine
 
----
-
-## 📌 Project Overview
-
-InsightFlow AI automates the complete data analysis workflow while allowing users to interact with their datasets using natural language.
-
-### Workflow
-
-CSV Dataset
-
-→ Data Cleaning
-
-→ Exploratory Data Analysis (EDA)
-
-→ AI Insight Generation
-
-→ Visualization Generation
-
-→ Report Generation
-
-→ Dataset Chat
-
-→ Context-Aware AI Responses
+InsightFlow AI is a full-stack data analysis platform that automates the workflow of a junior data analyst. Users can upload CSV datasets, automatically clean and analyze data, generate visualizations, create AI-powered business reports, and chat with their datasets through a modern web interface.
 
 ---
 
-## ✨ Features
+## Features
 
-### 🧹 Data Cleaning Engine
+### Data Processing
 
-* Column name standardization
-* Duplicate removal
-* Missing value handling
-* Data type conversion
-* Outlier detection using IQR
+* CSV Upload
+* Missing Value Handling
+* Duplicate Removal
+* Outlier Detection (IQR)
+* Automated Data Cleaning
 
-### 📊 EDA Engine
+### Data Analysis
 
-* Dataset Summary
-* Numerical Summary
-* Categorical Summary
+* Exploratory Data Analysis (EDA)
+* Automated Chart Generation
+* Statistical Summaries
+* Data Visualization
 
-### 🧠 AI Insights Engine
+### AI Capabilities
 
-* Dataset-level insights
-* Outlier analysis
-* Distribution analysis
-* Categorical pattern analysis
-* Automated insight generation
+* Gemini AI-Powered Insights
+* AI Business Report Generation
+* Dataset Question Answering
+* AI Report Caching
 
-### 📈 Visualization Engine
+### Data Persistence
 
-* Dynamic bar chart generation
-* Automatic chart generation for categorical columns
-* Box plot generation for numerical columns
-* PNG chart export
-* Dataset-independent visualization creation
+* Report History
+* Chat History Persistence
+* JSON-Based Storage
 
-### ⚡ FastAPI Backend
+### Downloads
 
-* CSV upload endpoint
-* Swagger UI integration
-* JSON response generation
-* Static file serving
-* Frontend-ready architecture
+* Cleaned Dataset Export
+* Outlier-Removed Dataset Export
+* PDF Report Export
 
-### 🤖 Gemini AI Integration
+### Frontend
 
-* AI-powered report generation
-* Natural language analysis summaries
-* Business-friendly insights
-
-### 💬 Dataset Question Answering
-
-Users can ask questions directly about uploaded datasets.
-
-Examples:
-
-* What are the top-selling products?
-* Which city generated the highest revenue?
-* What trends are visible in the dataset?
-
-### 🧠 Conversational Memory
-
-* Remembers previous questions
-* Context-aware follow-up responses
-* Multi-turn analytical conversations
-
-### 📜 Chat History API
-
-* Conversation storage
-* Historical chat retrieval
-* Foundation for future chat interfaces
+* React Dashboard
+* AI Report Viewer
+* Dataset Chat Interface
+* Report History Page
+* Responsive UI with Tailwind CSS
 
 ---
 
-## 🏗️ Project Architecture
+## Screenshots
 
-InsightFlow-AI/
+### Home Page
 
-├── main.py
+![Home Page](assets/screenshots/home.png)
 
-├── src/
+### Dashboard
 
-│ ├── cleaner.py
+![Dashboard](assets/screenshots/dashboard.png)
 
-│ ├── eda.py
+### Report Page
 
-│ ├── visualizer.py
+![Report](assets/screenshots/report.png)
 
-│ ├── reporting.py
+### Dataset Chat
 
-│ ├── pipeline.py
+![Chat](assets/screenshots/chat.png)
 
-│ ├── ai_report_generator.py
+### Report History
 
-│ ├── chat_engine.py
-
-│ └── memory_manager.py
-
-├── charts/
-
-├── uploads/
-
-├── reports/
-
-├── chat_history/
-
-├── requirements.txt
-
-├── README.md
-
-└── .gitignore
+![History](assets/screenshots/history.png)
 
 ---
 
-## ⚙️ Technologies Used
+## Tech Stack
+
+### Backend
 
 * Python
+* FastAPI
 * Pandas
 * NumPy
 * Matplotlib
-* FastAPI
-* Uvicorn
-* Gemini API
-* JSON Storage
+* Gemini AI
+
+### Frontend
+
+* React
+* Tailwind CSS
+* React Router
+* Axios
 
 ---
 
-## 🔥 Current API Capabilities
+## Project Structure
 
-The `/analyze` endpoint provides:
-
-* Cleaned Dataset
-* Cleaning Report
-* Outlier Report
-* Dataset Summary
-* Numerical Summary
-* Categorical Summary
-* AI Insights
-* Generated Charts
-* AI Report Generation
-
-Additional APIs:
-
-* Dataset Chat API
-* Chat History API
-* Report Retrieval API
-
----
-
-## 🧠 Key Engineering Decisions
-
-### Modular Architecture
-
-The project follows a modular design pattern:
-
-* cleaner.py
-* eda.py
-* visualizer.py
-* reporting.py
-* pipeline.py
-* chat_engine.py
-* memory_manager.py
-
-Benefits:
-
-* Maintainability
-* Scalability
-* Easier Testing
-* Reusability
-
-### Summary-Based LLM Architecture
-
-Instead of sending entire datasets to Gemini:
-
-Dataset
-
-→ EDA Summary
-
-→ AI Prompt
-
-→ Response
-
-Benefits:
-
-* Lower token consumption
-* Faster responses
-* Better scalability
-* Reduced API costs
-
-### Conversational Analytics Design
-
-Conversation history is stored and reused to provide context-aware responses.
-
-This allows InsightFlow AI to behave like an AI Data Analyst instead of a traditional analytics dashboard.
+```text
+InsightFlow-AI/
+│
+├── backend/
+│   └── app.py
+│
+├── frontend/
+│
+├── src/
+│   ├── cleaner.py
+│   ├── eda.py
+│   ├── gemini_service.py
+│   ├── llm.py
+│   ├── pdf_generator.py
+│   ├── pipeline.py
+│   ├── qa.py
+│   ├── report_generator.py
+│   ├── reporting.py
+│   ├── storage.py
+│   └── visualizer.py
+│
+├── assets/
+│   └── screenshots/
+│
+├── data/
+├── uploads/
+├── reports/
+├── charts/
+├── cleaned_data/
+├── pdf_reports/
+│
+├── run_pipeline.py
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-## 📚 Learning Outcomes
+## Installation
 
-Through this project I learned:
+### Backend
 
-* Data Cleaning
-* Exploratory Data Analysis
-* Data Visualization
-* FastAPI Development
-* REST APIs
-* File Upload Handling
-* JSON Serialization
-* Static File Serving
-* Gemini API Integration
-* Prompt Engineering
-* Conversational Memory Systems
-* Backend Development
-* Software Architecture
-* Frontend-Backend Communication
+```bash
+pip install -r requirements.txt
+```
 
----
+### Start Backend
 
-## 🛣️ Future Roadmap
+```bash
+uvicorn backend.app:app --reload
+```
 
-### Phase 1
+### Frontend
 
-* React Frontend
-* Interactive Dashboard
-* Professional Report Viewer
-
-### Phase 2
-
-* Advanced Dataset Chat Interface
-* Context-Aware Analytics
-
-### Phase 3
-
-* Agentic AI Workflow
-* Automatic Report Generation
-* Business Recommendation Engine
-
-### Phase 4
-
-* Database Integration
-* Analysis History
-* User Authentication
-
-### Phase 5
-
-* Cloud Deployment
-* Multi-User Support
-* Enterprise Reporting Features
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ---
 
-## 👨‍💻 Author
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+---
+
+## Live Demo
+
+Coming Soon
+
+---
+
+## Current Version
+
+```text
+v1.0.0
+```
+
+---
+
+## Future Improvements
+
+* Authentication
+* SQLite/PostgreSQL Integration
+* Multi-User Architecture
+
+---
+
+## Author
 
 Hariom Kale
 
-B.Tech CSE | Python Developer | AI Automation Enthusiast
-
-Building real-world AI systems publicly and learning software engineering through practical projects.
+Python Developer | FastAPI | React | AI-Powered Applications
