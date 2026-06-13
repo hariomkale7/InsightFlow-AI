@@ -172,7 +172,7 @@ GEMINI_API_KEY=your_api_key_here
 
 ## Live Demo
 
-Coming Soon
+https://insight-flow-ai-taupe.vercel.app
 
 ---
 
